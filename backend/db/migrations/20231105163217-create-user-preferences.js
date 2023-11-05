@@ -18,7 +18,11 @@ module.exports = {
         onDelete: 'CASCADE'
       },
       activeThemeId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references:{
+          model: 'Themes',
+          key: 'id'
+        }
       },
       createdAt: {
         allowNull: false,

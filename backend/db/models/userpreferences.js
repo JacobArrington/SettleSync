@@ -15,6 +15,11 @@ module.exports = (sequelize, DataTypes) => {
         as: 'user',
         onDelete: 'CASCADE'
       })
+      UserPreferences.belongsTo(models.Themes, {
+        foreignKey: 'activeThemeId',
+        as: 'activeTheme',
+        onDelete: 'SET NULL'
+      })
     }
   }
   UserPreferences.init({
