@@ -17,7 +17,7 @@ module.exports = {
       inputId: {
         type: Sequelize.INTEGER,
         references:{
-          model: 'CalculatorInput',
+          model: 'CalculatorInputs',
           key: 'id'
         },
         onDelete: 'CASCADE'

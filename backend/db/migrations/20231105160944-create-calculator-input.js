@@ -17,7 +17,7 @@ module.exports = {
       calcId: {
         type: Sequelize.INTEGER,
         references:{
-          model: 'RepaymentCalculator',
+          model: 'RepaymentCalculators',
           key: 'id'
         },
         onDelete: 'CASCADE'
