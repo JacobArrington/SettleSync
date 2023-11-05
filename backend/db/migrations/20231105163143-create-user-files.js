@@ -10,7 +10,12 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       userId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references:{
+          model: 'Users',
+          key: 'id'
+        },
+        onDelete: 'CASSCADE'
       },
       fileType: {
         type: Sequelize.ENUM('pdf', 'image', 'text'),
