@@ -10,7 +10,27 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+     CalculatorInput.belongsTo(models.RepaymentCalculator,{
+      foreignKey: 'calcId',
+      as: 'repayCalc',
+      onDelete: 'CASCADE'
+     })
+     CalculatorInput.hasMany(models.Installment,{
+      foreignKey: 'calcInputId',
+      as: 'installments',
+      onDelete: 'CASCADE'
+     })
+     CalculatorInput.hasMany(models.CustomInputs,{
+      foreignKey: 'calcInputId',
+      as: 'custom',
+      onDelete: 'CASCADE'
+     })
+     CalculatorInput.hasMany(models.Settlement,{
+      foreignKey: 'inputId',
+      as: 'settlement',
+      onDelete: 'CASCADE'
+      
+     })
     }
   }
   CalculatorInput.init({

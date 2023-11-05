@@ -10,7 +10,12 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       calcId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references:{
+          model: 'RepaymentCalculator',
+          key: 'id'
+        },
+        onDelete: 'CASCADE'
       },
       balance: {
         type: Sequelize.DECIMAL

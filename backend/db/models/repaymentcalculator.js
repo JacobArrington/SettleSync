@@ -16,6 +16,12 @@ module.exports = (sequelize, DataTypes) => {
         as: 'user',
         onDelete: 'CASCADE'
       })
+      RepaymentCalculator.hasMany(models.CalculatorInput,{
+        foreignKey: 'calcId',
+        as: 'calcInput',
+        onDelete: 'CASCADE'
+        
+      })
     }
   }
   RepaymentCalculator.init({

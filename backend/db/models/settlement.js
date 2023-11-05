@@ -10,7 +10,11 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      Settlement.belongsTo(models.CalculatorInput,{
+        foreignKey: 'inputId',
+        as: 'calcInput',
+        onDelete: 'CASCADE'
+      })
     }
   }
   Settlement.init({

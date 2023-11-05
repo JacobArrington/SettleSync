@@ -10,7 +10,13 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       inputId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references:{
+          model: 'CalculatorInput',
+          key: 'id'
+        },
+        onDelete: 'CASCADE'
+      
       },
       discountPercentage: {
         type: Sequelize.DECIMAL
