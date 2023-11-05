@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       })
     }
   }
+  //!
   UserPreferences.init({
     userId: DataTypes.INTEGER,
     activeThemeId: DataTypes.INTEGER
