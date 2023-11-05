@@ -39,9 +39,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    });
+    }, options);
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Installments');
+    options.tableName = "Installments";
+    return queryInterface.dropTable(options);
   }
 };

@@ -37,9 +37,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    });
+    }, options);
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('RepaymentCalculators');
+    options.tableName = "RepaymentCalculators";
+    return queryInterface.dropTable(options);
   }
 };
