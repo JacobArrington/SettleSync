@@ -4,11 +4,29 @@ const { Model, Validator } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     static associate(models) {
+      User.hasMany(models.RepaymentCalculator, {
+        foreignKey: 'userId',
+        as: 'calc',
+        onDelete: 'CASCADE',
+        hooks: true 
+      })
       User.hasMany(models.UserFiles,{
         foreignKey: 'userId',
         as: 'files',
         onDelete: 'CASCADE',
         hooks: true 
+      })
+      User.hasMany(models.UserPreferences,{
+        foreignKey: 'userId',
+        as: 'prefs',
+        onDelete: 'CASCADE',
+        hooks: true
+      })
+      User.hasMany(models.UserLayout,{
+        foreignKey: 'userId',
+        as: 'layout', 
+        onDelete: 'CASCADE',
+        hooks: true
       })
     }
   };

@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const userfiles = require('./userfiles');
 module.exports = (sequelize, DataTypes) => {
   class RepaymentCalculator extends Model {
     /**
@@ -10,7 +11,11 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      RepaymentCalculator.belongsTo(models.User,{
+        foreignKey: 'userId',
+        as: 'user',
+        onDelete: 'CASCADE'
+      })
     }
   }
   RepaymentCalculator.init({

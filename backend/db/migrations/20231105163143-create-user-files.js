@@ -15,7 +15,7 @@ module.exports = {
           model: 'Users',
           key: 'id'
         },
-        onDelete: 'CASSCADE'
+        onDelete: 'CASCADE'
       },
       fileType: {
         type: Sequelize.ENUM('pdf', 'image', 'text'),
