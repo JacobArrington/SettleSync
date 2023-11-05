@@ -22,7 +22,8 @@ module.exports = {
         references:{
           model: 'Themes',
           key: 'id'
-        }
+        },
+        onDelete: 'SET NULL'
       },
       createdAt: {
         allowNull: false,
