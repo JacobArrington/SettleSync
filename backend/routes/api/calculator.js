@@ -13,7 +13,18 @@ router.post('/calculator', requireAuth, async (req,res) =>{
             return res.status(400).json({message: "Only one calculator per user"})
         }
         const newCalc = await RepaymentCalculator.create({userId, calcName});
-        res.status(201).json(newCalc)
+
+        const {balance, lumpSum, remainderAfterLump} = req.body
+        const calcId = newCalc.id 
+
+
+        const newCalcInput = await CalculatorInput.create({
+            calcId,
+            balance,
+            lumpSum, 
+            remainderAfterLump 
+        })
+        res.status(201).json({ calculator: newCalc, calculatorInput: newCalcInput });
     }catch (error){
         res.status(400).json({error: error.message})
     }
