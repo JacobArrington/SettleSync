@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     calcInputId: DataTypes.INTEGER,
     numberOfInstallment: DataTypes.INTEGER,
     installmentAmount: DataTypes.DECIMAL,
+    isCustom: DataTypes.BOOLEAN,
     customNumberOfInstallments: DataTypes.INTEGER
   }, {
     sequelize,
