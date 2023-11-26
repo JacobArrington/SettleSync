@@ -155,4 +155,22 @@ router.get('/calculator',requireAuth, async (req,res) =>{
 })
 
 
+router.delete('/calculator', requireAuth, async (req, res) =>{
+    try{
+        const userId = req.user.id; 
+        const calculator = await RepaymentCalculator.findOne({where: {userId}})
+
+        if(!calculator){
+            return res.status(404).json({message: "Calculator not found"}); 
+        }
+
+        await calculator.destroy();
+
+        res.status(200).json({message: "Calculator deleted successfully"})
+    } catch(error){
+        res.status(500).json({error: error.message})
+    }
+})
+
+
 module.exports = router;
