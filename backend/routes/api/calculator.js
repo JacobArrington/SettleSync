@@ -1,6 +1,7 @@
 const express = require('express');
 const { requireAuth } = require('../../utils/auth');
 const { User, RepaymentCalculator, CalculatorInput, Installment, Settlement, CustomInputs } = require('../../db/models');
+const custominputs = require('../../db/models/custominputs');
 const router = express.Router();
 
 router.post('/calculator', requireAuth, async (req,res) =>{
@@ -116,5 +117,42 @@ router.post('/calculator', requireAuth, async (req,res) =>{
         res.status(400).json({error: error.message})
     }
 })
+
+router.get('/calculator',requireAuth, async (req,res) =>{
+    try{
+        const userId = req.user.id;
+
+        const calculator = await RepaymentCalculator.findOne({
+            where: {userId},
+            include:[
+                {
+                    model: CalculatorInput,
+                    as: 'calcInput',
+                    include:[
+                       {
+                        model: Installment,
+                        as: 'installments'
+                       },
+                       {
+                        model: Settlement,
+                        as: 'settlements'
+                       },
+                       {
+                        model: CustomInputs,
+                        as: 'custominputs'
+                       }
+                    ]
+                }
+            ]
+        });
+        if(!calculator){
+            return res.status(404).json({message: "Calculator not found have you created one?"})
+        }
+        res.json(calculator);
+    }catch (error) {
+        res.status(400).json({error: error.message})
+    }
+})
+
 
 module.exports = router;
