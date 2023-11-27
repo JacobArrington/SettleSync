@@ -204,11 +204,11 @@ router.put('/', requireAuth, async(req,res)=>{
         
             const [customSettlementRecord, created] = await Settlement.findOrCreate({
                 where: {
-                    inputId: calcInputs.id,
+                    inputId: calcInput.id,
                     isCustom: true
                 },
                 defaults: {
-                    inputId: calcInputs.id,
+                    inputId: calcInput.id,
                     discountPercentage: customSettlement,
                     isCustom: true,
                     settlementAmount,
