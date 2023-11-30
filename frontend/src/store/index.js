@@ -1,6 +1,7 @@
 import { createStore, combineReducers, applyMiddleware, compose } from "redux";
 import thunk from "redux-thunk";
 import sessionReducer from "./session";
+import calculatorReducer from "./caclulator";
 
 
 
@@ -8,6 +9,7 @@ import sessionReducer from "./session";
 const rootReducer = combineReducers({
   // add reducer functions here
   session: sessionReducer,
+  calculator: calculatorReducer,
 });
 
 let enhancer;

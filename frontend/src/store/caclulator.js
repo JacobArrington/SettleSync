@@ -59,21 +59,28 @@ export const postCalc = (calcData) => async (dispatch) =>{
 const initState = {}
 
 export default function calculatorReducer(state = initState, action){
-    
+    let newState = {}
     switch(action.type){
-        case GET_CALC:
-            return {
-                ...state ,
-                calculators: action.calculator,
-                currCalc: action.calculator[0]
-            }
-        case ADD_CALC:
-            return{
-                ...state, 
-                calculators: state.calculators ? [...state.calculators, action.calculator] : [action.calculator],
-                currCalc : action.calculator
-            }
-
+        case GET_CALC:{
+       action.calculator.foreach(calc => {
+        newState[calc.id] = calc 
+       })
         
     }
+    case ADD_CALC:{
+        const { calculator } = action;
+        newState = {...state, [calculator.id]: calculator};
+        return newState
+    }
+    // case UPDATE_CALC: {
+    //     const { calculator } = action;
+    //     newState = { ...state, [calculator.id]: calculator };
+    //     return newState;
+    // }
+    // case DELETE_CALC: {
+    //     newState = { ...state };
+    //     delete newState[action.calculatorId];
+    //     return newState;
+    // }
+}
 }
