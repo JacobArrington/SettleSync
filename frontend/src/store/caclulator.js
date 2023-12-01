@@ -65,6 +65,7 @@ export default function calculatorReducer(state = initState, action){
        action.calculator.foreach(calc => {
         newState[calc.id] = calc 
        })
+       return newState
         
     }
     case ADD_CALC:{
@@ -82,5 +83,7 @@ export default function calculatorReducer(state = initState, action){
     //     delete newState[action.calculatorId];
     //     return newState;
     // }
+    default:
+        return state
 }
 }
