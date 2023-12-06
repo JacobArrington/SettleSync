@@ -1,3 +1,4 @@
+import { csrfFetch } from "./csrf"
 
 
 const GET_CALC = "calculator/GET_CALC"
@@ -27,15 +28,16 @@ const deleteCalculator = (calculatorId) =>({
 })
 
 export const fetchCalc = () => async (dispatch) =>{
-    const response = await fetch('/api/calculator')
+    const response = await csrfFetch('/api/calculator')
     if(response.ok){
         const calculator = await response.json()
         dispatch(getCalculator(calculator))
+        return calculator
     }
 }
 
 export const postCalc = (calcData) => async (dispatch) =>{
-    const response = await fetch('/api/calculator',{
+    const response = await csrfFetch('/api/calculator',{
         method: "POST", 
         headers: {"Content-Type" : "application/json"},
         body: JSON.stringify(calcData)
@@ -49,41 +51,55 @@ export const postCalc = (calcData) => async (dispatch) =>{
     
 }
 
+export const editCalc = (calcData) => async(dispatch) =>{
+    const response = await csrfFetch('/api/calculator', {
+        method: "PUT",
+        headers: {"Content-Type" : "application/json"},
+        body: JSON.stringify(calcData)
+    })
 
-
-
-
-
-
-
-const initState = {}
-
-export default function calculatorReducer(state = initState, action){
-    let newState = {}
-    switch(action.type){
-        case GET_CALC:{
-       action.calculator.foreach(calc => {
-        newState[calc.id] = calc 
-       })
-       return newState
-        
+    if(response.ok){
+        const updatedCalc =  await response.json()
+        dispatch(updateCalculator)
+        return updatedCalc
     }
-    case ADD_CALC:{
-        const { calculator } = action;
-        newState = {...state, [calculator.id]: calculator};
-        return newState
-    }
-    // case UPDATE_CALC: {
-    //     const { calculator } = action;
-    //     newState = { ...state, [calculator.id]: calculator };
-    //     return newState;
-    // }
-    // case DELETE_CALC: {
-    //     newState = { ...state };
-    //     delete newState[action.calculatorId];
-    //     return newState;
-    // }
-    default:
-        return state
 }
+
+
+
+
+const initState = {};
+
+export default function calculatorReducer(state = initState, action) {
+    // Create a copy of the current state
+    let newState = { ...state };
+
+    switch (action.type) {
+        case GET_CALC:
+            // Update the newState with the calculator data
+            newState.calculatorData = action.calculator;
+            break;
+
+        case ADD_CALC:
+            // Update newState with the newly added calculator data
+            newState.calculatorData = action.calculator;
+            break;
+
+        case UPDATE_CALC:
+            // Update the calculator data in newState
+            newState.calculatorData = action.calculator;
+            break;
+
+        // Uncomment and update if DELETE_CALC functionality is needed
+        // case DELETE_CALC:
+        //     newState.calculatorData = null;
+        //     break;
+
+        default:
+            // If none of the above actions, return the current state
+            return state;
+    }
+
+    // Return the updated newState
+    return newState;
 }

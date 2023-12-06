@@ -4,6 +4,7 @@ import { Route, Switch } from "react-router-dom";
 import SignupFormModal from "./components/SignupFormModal";
 import * as sessionActions from "./store/session";
 import Navigation from "./components/Navigation";
+import Dashboard from "./components/Dashboard";
 
 function App() {
   const dispatch = useDispatch();
@@ -19,6 +20,9 @@ function App() {
         <Switch>
           <Route path="/signup">
             <SignupFormModal />
+          </Route>
+          <Route path="/dashboard">
+          <Dashboard />
           </Route>
         </Switch>
       )}

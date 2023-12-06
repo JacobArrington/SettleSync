@@ -138,11 +138,11 @@ router.get('/',requireAuth, async (req,res) =>{
                        },
                        {
                         model: Settlement,
-                        as: 'settlements'
+                        as: 'settlement'
                        },
                        {
                         model: CustomInputs,
-                        as: 'custominputs'
+                        as: 'custom'
                        }
                     ]
                 }
