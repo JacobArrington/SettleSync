@@ -12,13 +12,13 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs}) 
     const predefinedDiscounts = [5, 10, 15, 20, 25];
 
     const [formData, setFormData] = useState({
-        balance: calculatorInput?.balance || 0,
-        lumpSum: calculatorInput?.lumpSum || 0,
-        remainderAfterLump: calculatorInput?.remainderAfterLump || 0,
-        customInstallment: installments?.customInstallment || 0, 
-        customDiscountPercentage: customInputs?.customDiscountPercentage || 0,
-        customMonthlyPayment: customInputs?.customMonthlyPayment || 0,
-        interestRate: customInputs?.interestRate || 0
+        balance: calculatorInput?.balance,
+        lumpSum: calculatorInput?.lumpSum,
+        remainderAfterLump: calculatorInput?.remainderAfterLump ,
+        customInstallment: installments?.customInstallment ,
+        customDiscountPercentage: customInputs?.customDiscountPercentage, 
+        customMonthlyPayment: customInputs?.customMonthlyPayment ,
+        interestRate: customInputs?.interestRate ,
     })
 
     useEffect(() => {
@@ -29,10 +29,10 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs}) 
                 balance: calculatorInput.balance,
                 lumpSum: calculatorInput.lumpSum,
                 remainderAfterLump: calculatorInput.remainderAfterLump,
-                customInstallment: installments.customInstallment || 0,
-                customDiscountPercentage: settlements.customDiscountPercentage || 0,
-                customMonthlyPayment: customInputs.customMonthlyPayment || 0,
-                interestRate: customInputs.interestRate || 0
+                customInstallment: installments.customInstallment ,
+                customDiscountPercentage: settlements.customDiscountPercentage ,
+                customMonthlyPayment: customInputs.customMonthlyPayment ,
+                interestRate: customInputs.interestRate  
             });
         } 
     }, [dispatch, calculatorData]);
@@ -40,7 +40,7 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs}) 
     const handleInputChange = (e) =>{
        const newFormData = {
             ...formData,
-            [e.target.name]: parseFloat(e.target.value) || 0
+            [e.target.name]: parseFloat(e.target.value) 
         }
         newFormData.remainderAfterLump = newFormData.balance - newFormData.lumpSum;
         setFormData(newFormData);
@@ -53,9 +53,46 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs}) 
         let balanceWithInterest = formData.balance + (formData.balance *(formData.interestRate / 100) / 12)
         return formData.customMonthlyPayment > 0 ? Math.ceil(balanceWithInterest / formData.customMonthlyPayment) : 0
     }
-    
-    const calculateInstallmentAmount = (numberOfInstallments) => {
-        return formData.balance / numberOfInstallments;
+    const [localInstallments, setLocalInstallments] = useState(installments);
+    const [customNumberOfInstallments, setCustomNumberOfInstallments] = useState(0);
+    const [customInstallmentAmount, setCustomInstallmentAmount] = useState(0);
+
+
+    useEffect(() => {
+        setLocalInstallments(installments);
+    }, [installments]);
+
+
+
+    useEffect(() => {
+        // Recalculate installment amounts when the balance changes
+        const amountToDivide = formData.remainderAfterLump > 0 ? formData.remainderAfterLump : formData.balance;
+        const updatedInstallments = localInstallments.map(installment => ({
+            ...installment,
+            installmentAmount: amountToDivide / installment.numberOfInstallment
+        }));
+        setLocalInstallments(updatedInstallments);
+    }, [formData.balance, formData.remainderAfterLump, localInstallments]);
+
+    const handleInstallmentChange = (index, key, value) => {
+        const updatedInstallments = localInstallments.map((inst, idx) => {
+            if (idx === index) {
+                return { ...inst, [key]: parseFloat(value) || 0 };
+            }
+            return inst;
+        });
+        setLocalInstallments(updatedInstallments);
+    };
+
+    useEffect(()=>{
+        if(customNumberOfInstallments > 0){
+            const amountToDivide = formData.remainderAfterLump > 0 ? formData.remainderAfterLump : formData.balance;
+            setCustomInstallmentAmount(amountToDivide / customNumberOfInstallments)
+        }
+    },[formData.balance, customNumberOfInstallments])
+
+    const handleCustomInstallmentChange = (e) => {
+        setCustomNumberOfInstallments(parseFloat(e.target.value) );
     };
 
     const calculateSettlement = (discountPercentage) =>{
@@ -67,6 +104,7 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs}) 
     return (
         <div className="calc-container">
             <div className="calc-form">
+                <div className="calc-inputs">
                 <label htmlFor="balance">Balance:</label>
                 <input 
                     type="number"
@@ -90,15 +128,58 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs}) 
                     value={formData.remainderAfterLump}
                     readOnly
                 />
+                </div>
 
-                <label htmlFor="customInstallment">Custom Installment:</label>
+
+                <div className="installments-container">
+                <h3>Installments</h3>
+                {localInstallments && localInstallments.map((installment, index) => (
+                    <div key={index} className="installment-item">
+  <label htmlFor={`numberOfInstallment-${index}`}>Installment :</label>
+                        <input 
+                            id={`numberOfInstallment-${index}`}
+                            type="number"
+                            name="numberOfInstallment"
+                            value={installment.numberOfInstallment}
+                            onChange={(e) => handleInstallmentChange(index, 'numberOfInstallment', e.target.value)}
+                            readOnly
+                        />
+
+                        <label htmlFor={`installmentAmount-${index}`}>Amount:</label>
+                        <input 
+                            id={`installmentAmount-${index}`}
+                            type="number"
+                            name="installmentAmount"
+                            value={installment.installmentAmount.toFixed(2)}
+                           readOnly
+                        />
+
+                        
+                    </div>
+                ))}
+                    <div className="custom-installment-container">
+                <label htmlFor="customNumberOfInstallments">Custom   :</label>
                 <input 
+                    id="customNumberOfInstallments"
                     type="number"
-                    name="customInstallment"
-                    value={formData.customInstallment}
-                    onChange={handleInputChange}
+                    value={customNumberOfInstallments}
+                    onChange={handleCustomInstallmentChange}
                 />
 
+                <label htmlFor="customInstallmentAmount">Amount:</label>
+                <input 
+                    id="customInstallmentAmount"
+                    type="number"
+                    readOnly 
+                    value={customInstallmentAmount.toFixed(2)}
+                />
+                
+
+                
+            </div>
+
+
+        
                 <label htmlFor="customDiscountPercentage">Custom Discount Percentage:</label>
                 <input 
                     type="number"
@@ -126,8 +207,10 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs}) 
                 {/* Add more inputs as needed based on your application requirements */}
             </div>
 
-            {/* Display logic for installments, settlements, etc. */}
-        </div>
+           </div>
+           </div>
+           
+        
     );
 };
 
