@@ -96,9 +96,10 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs}) 
     };
 
     const calculateSettlement = (discountPercentage) =>{
-        const savings = formData.balance * (discountPercentage / 100)
-        const settlementAmmount = formData.balance - savings; 
-        return { settlementAmmount , savings }
+        const amount = formData.remainderAfterLump > 0 ? formData.remainderAfterLump : formData.balance;
+        const savings = amount * (discountPercentage / 100) ?? 0
+        const settlementAmount = amount - savings ?? 0; 
+        return { settlementAmount , savings }
     }
 
     return (
@@ -109,6 +110,7 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs}) 
                 <input 
                     type="number"
                     name="balance"
+                    placeholder="0"
                     value={formData.balance}
                     onChange={handleInputChange}
                 />
@@ -117,6 +119,7 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs}) 
                 <input 
                     type="number"
                     name="lumpSum"
+                    placeholder="0"
                     value={formData.lumpSum}
                     onChange={handleInputChange}
                 />
@@ -177,16 +180,70 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs}) 
 
                 
             </div>
+                <div className="settlement-container">
+                    <h4>Settlements</h4>
+                    {predefinedDiscounts.map((discount, index) =>{
+                    const { settlementAmount, savings } = calculateSettlement(discount, formData.remainderAfterLump)
+                    return (
+                        <div key={index} className="settlement-item"> 
+                        <label>Discount %:</label>
+                        <input 
+                                
+                                type="number"
+                                readOnly
+                                value={discount}
+                            />
+                            <label>Savings:</label>
+                            <input 
+                                id="Savings"
+                                type="number"
+                                readOnly
+                                value={savings.toFixed(2)}
+                            />
+                            <label>Settlement Offer:</label>
+                            <input
+                                id="Toal Settlement" 
+                                type="number"
+                                readOnly
+                                value={settlementAmount.toFixed(2)}
+                            />
+                        </div>
+                    )
+                    })}
+       <div className="custom-settlement">                 
+         <label htmlFor="customDiscountPercentage">Custom  %:  </label>
+    <input 
+        type="number"
+        name="customDiscountPercentage"
+        placeholder="0"
+        value={formData.customDiscountPercentage}
+        onChange={handleInputChange}
+    />
+    
+       
+            <label>Savings:</label>
+            <input 
+                type="number"
+                readOnly
+                placeholder="0.00"
+                value={calculateSettlement(formData.customDiscountPercentage).savings.toFixed(2)}
+            />
+            <label>Settlement Offer:</label>
+            <input
+                type="number"
+                readOnly
+                placeholder="0.00"
+                value={calculateSettlement(formData.customDiscountPercentage).settlementAmount.toFixed(2)}
+            />
+        </div>
+    
 
+                
+                
+                </div>
 
         
-                <label htmlFor="customDiscountPercentage">Custom Discount Percentage:</label>
-                <input 
-                    type="number"
-                    name="customDiscountPercentage"
-                    value={formData.customDiscountPercentage}
-                    onChange={handleInputChange}
-                />
+              
 
                 <label htmlFor="customMonthlyPayment">Custom Monthly Payment:</label>
                 <input 
