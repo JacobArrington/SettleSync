@@ -12,13 +12,13 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs, c
     const predefinedDiscounts = [5, 10, 15, 20, 25];
 
     const [formData, setFormData] = useState({
-        balance: calculatorInput?.balance,
-        lumpSum: calculatorInput?.lumpSum,
-        remainderAfterLump: calculatorInput?.remainderAfterLump ,
-        customInstallment: installments?.customInstallment ,
-        customDiscountPercentage: customInputs?.customDiscountPercentage, 
-        customMonthlyPayment: customInputs?.customMonthlyPayment ,
-        interestRate: customInputs?.interestRate ,
+        balance: calculatorInput?.balance || "",
+        lumpSum: calculatorInput?.lumpSum || "",
+        remainderAfterLump: calculatorInput?.remainderAfterLump || "",
+        customInstallment: installments?.customInstallment || "",
+        customDiscountPercentage: customInputs?.customDiscountPercentage || "", 
+        customMonthlyPayment: customInputs?.customMonthlyPayment || "" ,
+        interestRate: customInputs?.interestRate || "" ,
     })
 
     useEffect(() => {
@@ -26,38 +26,45 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs, c
            
             
             setFormData({
-                balance: calculatorInput.balance,
-                lumpSum: calculatorInput.lumpSum,
+                balance: calculatorInput.balance  ,
+                lumpSum: calculatorInput.lumpSum ,
                 remainderAfterLump: calculatorInput.remainderAfterLump,
-                customInstallment: installments.customInstallment ,
-                customDiscountPercentage: settlements.customDiscountPercentage ,
-                customMonthlyPayment: customInputs.customMonthlyPayment ,
-                interestRate: customInputs.interestRate  || 0
+                customInstallment: installments.customInstallment || "",
+                customDiscountPercentage: settlements.customDiscountPercentage || "" ,
+                customMonthlyPayment: customInputs.customMonthlyPayment || "" ,
+                interestRate: customInputs.interestRate || ""
             });
         } 
-    }, [dispatch, calculatorData]);
+    }, [calculatorInput, installments, settlements, customInputs]);
 
-    const handleInputChange = (e) =>{
-       const newFormData = {
-            ...formData,
-            [e.target.name]: parseFloat(e.target.value) 
+    const handleInputChange = (e) => {
+        let value = e.target.value === "" ? "" : parseFloat(e.target.value);
+        if (isNaN(value)) {
+            value = 0;
         }
-        newFormData.remainderAfterLump = newFormData.balance - newFormData.lumpSum;
+    
+        const newFormData = {
+            ...formData,
+            [e.target.name]: value
+        };
+    
+        if (e.target.name === 'balance' || e.target.name === 'lumpSum') {
+            newFormData.remainderAfterLump = (parseFloat(newFormData.balance) || 0) - (parseFloat(newFormData.lumpSum) || 0);
+        }
+    
         setFormData(newFormData);
-    }
+    };
     const handleRecalculate = async () => {
         await dispatch(editCalc(formData))
     }
 
-    const [monthsToPay, setMonthsToPay] = useState(0);
+    const [monthsToPay, setMonthsToPay] = useState("");
 
     useEffect(() => {
         const calculateMonthsToPay = () => {
             const amount = formData.remainderAfterLump > 0 ? formData.remainderAfterLump : formData.balance;
             const interestPerMonth = formData.interestRate / 100 / 12;
             const balanceWithInterest = amount * (1 + interestPerMonth);
-
-            console.log("Calculating months to pay:", { amount, interestPerMonth, balanceWithInterest, customMonthlyPayment: formData.customMonthlyPayment });
 
             return formData.customMonthlyPayment > 0 ? Math.ceil(balanceWithInterest / formData.customMonthlyPayment) : 0;
         };
@@ -66,7 +73,7 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs, c
     }, [formData.balance, formData.lumpSum, formData.customMonthlyPayment, formData.interestRate, formData.remainderAfterLump]);
 
     const [localInstallments, setLocalInstallments] = useState(installments);
-    const [customNumberOfInstallments, setCustomNumberOfInstallments] = useState(0);
+    const [customNumberOfInstallments, setCustomNumberOfInstallments] = useState("");
     const [customInstallmentAmount, setCustomInstallmentAmount] = useState(0);
 
 
@@ -84,7 +91,7 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs, c
             installmentAmount: amountToDivide / installment.numberOfInstallment
         }));
         setLocalInstallments(updatedInstallments);
-    }, [formData.balance, formData.remainderAfterLump, localInstallments]);
+    }, [formData.balance, formData.remainderAfterLump,]);
 
     const handleInstallmentChange = (index, key, value) => {
         const updatedInstallments = localInstallments.map((inst, idx) => {
@@ -96,15 +103,21 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs, c
         setLocalInstallments(updatedInstallments);
     };
 
-    useEffect(()=>{
-        if(customNumberOfInstallments > 0){
-            const amountToDivide = formData.remainderAfterLump > 0 ? formData.remainderAfterLump : formData.balance;
-            setCustomInstallmentAmount(amountToDivide / customNumberOfInstallments)
+    useEffect(() => {
+        const amountToDivide = formData.remainderAfterLump > 0 ? formData.remainderAfterLump : formData.balance;
+        
+        if (customNumberOfInstallments > 0) {
+            setCustomInstallmentAmount(amountToDivide / customNumberOfInstallments);
+        } else {
+            setCustomInstallmentAmount(0); // Reset to 0 if customNumberOfInstallments is 0 or less
         }
-    },[formData.balance, customNumberOfInstallments])
+    }, [formData.balance, formData.remainderAfterLump, customNumberOfInstallments]);
 
     const handleCustomInstallmentChange = (e) => {
-        setCustomNumberOfInstallments(parseFloat(e.target.value) );
+        let value = e.target.value;
+        // Check if the value is an empty string and set it to a default value
+        let numInstallments = value === "" ? 0 : parseFloat(value);
+        setCustomNumberOfInstallments(numInstallments);
     };
 
     const calculateSettlement = (discountPercentage) =>{
@@ -116,7 +129,7 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs, c
 
     return (
         <div className="calc-container">
-            <div className="calc-name">
+            <div className="header">
                 <h3>{calcName}</h3>
             </div>
             <div className="calc-form">
@@ -265,6 +278,7 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs, c
                     type="number"
                     name="customMonthlyPayment"
                     value={formData.customMonthlyPayment}
+                    placeholder="0"
                     onChange={handleInputChange}
                 />
 
@@ -273,6 +287,7 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs, c
         type="number"
         id="monthsToPay"
         readOnly
+        placeholder="0"
         value={monthsToPay}
     />
 
