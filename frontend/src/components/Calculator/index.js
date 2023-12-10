@@ -11,7 +11,8 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs, c
     const predefinedInstallments = [2, 3, 6, 9, 12, 18, 24];
     const predefinedDiscounts = [5, 10, 15, 20, 25];
 
-    const [formData, setFormData] = useState({
+
+   const initData = {
         balance: calculatorInput?.balance || "",
         lumpSum: calculatorInput?.lumpSum || "",
         remainderAfterLump: calculatorInput?.remainderAfterLump || "",
@@ -19,7 +20,13 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs, c
         customDiscountPercentage: customInputs?.customDiscountPercentage || "", 
         customMonthlyPayment: customInputs?.customMonthlyPayment || "" ,
         interestRate: customInputs?.interestRate || "" ,
-    })
+    }
+
+    const [formData, setFormData] = useState(initData)
+
+    const clearData = () =>{
+        setFormData(initData)
+    }
 
     useEffect(() => {
         if (calculatorInput) {
@@ -54,9 +61,7 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs, c
     
         setFormData(newFormData);
     };
-    const handleRecalculate = async () => {
-        await dispatch(editCalc(formData))
-    }
+
 
     const [monthsToPay, setMonthsToPay] = useState("");
 
@@ -193,6 +198,7 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs, c
                 <input 
                     id="customNumberOfInstallments"
                     type="number"
+                    placeholder="0"
                     value={customNumberOfInstallments}
                     onChange={handleCustomInstallmentChange}
                 />
@@ -201,6 +207,7 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs, c
                 <input 
                     id="customInstallmentAmount"
                     type="number"
+                    placeholder="0"
                     readOnly 
                     value={customInstallmentAmount}
                 />
@@ -295,11 +302,15 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs, c
                 <input 
                     type="number"
                     name="interestRate"
+                    placeholder="0"
                     value={formData.interestRate}
                     onChange={handleInputChange}
                 />
+            <div className="footer">
+                    <button onClick={clearData}>C</button>
+            </div>
+        </div>       
 
-</div>       
             </div>
 
            </div>
