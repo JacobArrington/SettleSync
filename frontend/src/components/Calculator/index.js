@@ -109,14 +109,14 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs, c
         if (customNumberOfInstallments > 0) {
             setCustomInstallmentAmount(amountToDivide / customNumberOfInstallments);
         } else {
-            setCustomInstallmentAmount(0); // Reset to 0 if customNumberOfInstallments is 0 or less
+            setCustomInstallmentAmount(""); // Reset to 0 if customNumberOfInstallments is 0 or less
         }
     }, [formData.balance, formData.remainderAfterLump, customNumberOfInstallments]);
 
     const handleCustomInstallmentChange = (e) => {
         let value = e.target.value;
         // Check if the value is an empty string and set it to a default value
-        let numInstallments = value === "" ? 0 : parseFloat(value);
+        let numInstallments = value === "" ? "" : parseFloat(value);
         setCustomNumberOfInstallments(numInstallments);
     };
 
@@ -202,7 +202,7 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs, c
                     id="customInstallmentAmount"
                     type="number"
                     readOnly 
-                    value={customInstallmentAmount.toFixed(2)}
+                    value={customInstallmentAmount}
                 />
                 
 
