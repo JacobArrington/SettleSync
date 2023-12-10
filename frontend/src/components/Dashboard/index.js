@@ -35,6 +35,7 @@ const Dashboard = () => {
                   installments={calculatorState.calcInput[0].installments}
                   settlements={calculatorState.calcInput[0].settlement}
                   customInputs={calculatorState.calcInput[0].custom}
+                  calcName={calculatorState.calcName}
                 />
             )}
         </div>

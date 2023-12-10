@@ -4,7 +4,7 @@ import { fetchCalc, editCalc } from "../../store/caclulator";
 import { useModal } from "../../context/modal"
 import PostCalculatorModal from "../PostCalculatorModal";
 
-const Calculator = ({calculatorInput, installments, settlements, customInputs}) =>{
+const Calculator = ({calculatorInput, installments, settlements, customInputs, calcName}) =>{
     const dispatch = useDispatch();
     const calculatorData = useSelector(state => state.calculator?.calcInput);
 
@@ -32,7 +32,7 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs}) 
                 customInstallment: installments.customInstallment ,
                 customDiscountPercentage: settlements.customDiscountPercentage ,
                 customMonthlyPayment: customInputs.customMonthlyPayment ,
-                interestRate: customInputs.interestRate  
+                interestRate: customInputs.interestRate  || 0
             });
         } 
     }, [dispatch, calculatorData]);
@@ -49,10 +49,22 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs}) 
         await dispatch(editCalc(formData))
     }
 
-    const calculateMonthsToPay = () => {
-        let balanceWithInterest = formData.balance + (formData.balance *(formData.interestRate / 100) / 12)
-        return formData.customMonthlyPayment > 0 ? Math.ceil(balanceWithInterest / formData.customMonthlyPayment) : 0
-    }
+    const [monthsToPay, setMonthsToPay] = useState(0);
+
+    useEffect(() => {
+        const calculateMonthsToPay = () => {
+            const amount = formData.remainderAfterLump > 0 ? formData.remainderAfterLump : formData.balance;
+            const interestPerMonth = formData.interestRate / 100 / 12;
+            const balanceWithInterest = amount * (1 + interestPerMonth);
+
+            console.log("Calculating months to pay:", { amount, interestPerMonth, balanceWithInterest, customMonthlyPayment: formData.customMonthlyPayment });
+
+            return formData.customMonthlyPayment > 0 ? Math.ceil(balanceWithInterest / formData.customMonthlyPayment) : 0;
+        };
+
+        setMonthsToPay(calculateMonthsToPay());
+    }, [formData.balance, formData.lumpSum, formData.customMonthlyPayment, formData.interestRate, formData.remainderAfterLump]);
+
     const [localInstallments, setLocalInstallments] = useState(installments);
     const [customNumberOfInstallments, setCustomNumberOfInstallments] = useState(0);
     const [customInstallmentAmount, setCustomInstallmentAmount] = useState(0);
@@ -104,6 +116,9 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs}) 
 
     return (
         <div className="calc-container">
+            <div className="calc-name">
+                <h3>{calcName}</h3>
+            </div>
             <div className="calc-form">
                 <div className="calc-inputs">
                 <label htmlFor="balance">Balance:</label>
@@ -135,7 +150,7 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs}) 
 
 
                 <div className="installments-container">
-                <h3>Installments</h3>
+                <h4>Installments</h4>
                 {localInstallments && localInstallments.map((installment, index) => (
                     <div key={index} className="installment-item">
   <label htmlFor={`numberOfInstallment-${index}`}>Installment :</label>
@@ -243,8 +258,8 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs}) 
                 </div>
 
         
-              
-
+              <div className="Other">
+                    <h4>Other</h4>
                 <label htmlFor="customMonthlyPayment">Custom Monthly Payment:</label>
                 <input 
                     type="number"
@@ -252,6 +267,14 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs}) 
                     value={formData.customMonthlyPayment}
                     onChange={handleInputChange}
                 />
+
+                <label htmlFor="monthsToPay">Months to Pay Off:</label>
+                <input 
+        type="number"
+        id="monthsToPay"
+        readOnly
+        value={monthsToPay}
+    />
 
                 <label htmlFor="interestRate">Interest Rate:</label>
                 <input 
@@ -261,7 +284,7 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs}) 
                     onChange={handleInputChange}
                 />
 
-                {/* Add more inputs as needed based on your application requirements */}
+</div>       
             </div>
 
            </div>
