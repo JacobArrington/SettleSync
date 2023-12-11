@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchCalc, editCalc } from "../../store/caclulator";
 import { useModal } from "../../context/modal"
 import PostCalculatorModal from "../PostCalculatorModal";
+import './calc.css'
 
 const Calculator = ({calculatorInput, installments, settlements, customInputs, calcName}) =>{
     const dispatch = useDispatch();
@@ -166,7 +167,7 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs, c
                 />
                 </div>
 
-
+                <div className="outcome-container">
                 <div className="installments-container">
                 <h4>Installments</h4>
                 {localInstallments && localInstallments.map((installment, index) => (
@@ -273,7 +274,7 @@ const Calculator = ({calculatorInput, installments, settlements, customInputs, c
         </div>
     
 
-                
+        </div>      
                 
                 </div>
 

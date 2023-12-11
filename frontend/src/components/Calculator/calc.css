@@ -1,5 +1,49 @@
-.installment-item {
+/* .calc-container {
+    display: grid;
+    grid-template-rows: auto auto auto auto auto;
+    grid-gap: 20px;
+    border: 1px solid black;
+    max-width: 1200px;
+}
+
+.calc-container > *{
+    width: 100%;
+   
+    margin: 5px 0;
+}
+
+.header{
+    display: flex;
+    width: calc(100%);
+    justify-content: center;
+    margin-top: -15px;
+    border: 1px solid black;
+}
+
+.outcome-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    margin: 10px;
+}
+
+.installments-container, .custom-installment-container, .settlement-container{
+    flex: 1; 
+    margin: 0 10px; 
+    max-width: calc(33% - 20px);
+} */
+
+
+
+
+
+
+
+
+/* .installment-item {
     border: 1px solid #ccc;
     padding: 10px;
     margin-bottom: 10px;
-}
+} */
