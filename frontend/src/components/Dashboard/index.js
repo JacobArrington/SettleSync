@@ -12,11 +12,11 @@ const Dashboard = () => {
     // Check if calculator data exists and has the required data
     const hasCalculator = Boolean(calculatorState && calculatorState.calcInput && calculatorState.calcInput.length > 0);
 
-    useEffect(() => {
-        if (!hasCalculator) {
-            dispatch(fetchCalc());
-        }
-    }, [dispatch, hasCalculator]);
+    // useEffect(() => {
+    //     if (!hasCalculator || hasCalculator) {
+    //         dispatch(fetchCalc());
+    //     }
+    // }, [dispatch, hasCalculator]);
 
     const handleCreateCalculator = async () => {
         await dispatch(postCalc({ /* default calc data */ }));
