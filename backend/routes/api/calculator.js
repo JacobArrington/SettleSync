@@ -148,9 +148,9 @@ router.get('/',requireAuth, async (req,res) =>{
                 }
             ]
         });
-        if(!calculator){
-            return res.status(404).json({message: "Calculator not found have you created one?"})
-        }
+        // if(!calculator){
+        //     return res.status(404).json({message: "Calculator not found have you created one?"})
+        // }
         res.json(calculator);
     }catch (error) {
         res.status(400).json({error: error.message})

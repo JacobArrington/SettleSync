@@ -8,15 +8,15 @@ import Calculator from '../Calculator';
 const Dashboard = () => {
     const dispatch = useDispatch();
     const calculatorState = useSelector(state => state.calculator.calculatorData);
-
+    const currentUser = useSelector(state => state.session.user);
     // Check if calculator data exists and has the required data
-    const hasCalculator = Boolean(calculatorState && calculatorState.calcInput && calculatorState.calcInput.length > 0);
+    const hasCalculator = Boolean(calculatorState && calculatorState.calcInput )
 
-    // useEffect(() => {
-    //     if (!hasCalculator || hasCalculator) {
-    //         dispatch(fetchCalc());
-    //     }
-    // }, [dispatch, hasCalculator]);
+    useEffect(() => {
+        if(!hasCalculator && currentUser)
+            dispatch(fetchCalc());
+        
+    }, [dispatch, currentUser, hasCalculator]);
 
     const handleCreateCalculator = async () => {
         await dispatch(postCalc({ /* default calc data */ }));
@@ -27,7 +27,7 @@ const Dashboard = () => {
             {!hasCalculator ? (
                 <OpenModalButton
                     buttonText="Create Calculator"
-                    modalComponent={<PostCalculatorModal onCreate={handleCreateCalculator} />}
+                    modalComponent={<PostCalculatorModal />}
                 />
             ) : (
                 <Calculator 
