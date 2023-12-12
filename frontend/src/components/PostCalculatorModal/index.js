@@ -20,12 +20,12 @@ import { useModal } from '../../context/modal'
              
                     const defaultCalcData = {
                         userId: currentUser.id,
-                        balance: '', 
-                        lumpSum: '',
-                        customInstallment: '',
-                        customDiscountPercentage: '',
-                        customMonthlyPayment: '',
-                        interestRate: ''
+                        balance: 0, 
+                        lumpSum: 0,
+                        customInstallment: 0,
+                        customDiscountPercentage: 0,
+                        customMonthlyPayment: 0,
+                        interestRate: 0
                     };
                     await dispatch(postCalc(defaultCalcData));
                     await dispatch(fetchCalc())
