@@ -1,10 +1,5 @@
 'use strict';
 /** @type {import('sequelize-cli').Migration} */
-let options = {};
-if (process.env.NODE_ENV === 'production') {
-  options.schema = process.env.SCHEMA; 
-   // define your schema in options object
-}
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Installments', {
@@ -15,12 +10,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       calcInputId: {
-        type: Sequelize.INTEGER,
-        references:{
-          model: 'CalculatorInputs',
-          key: 'id'
-        },
-        onDelete: 'CASCADE'
+        type: Sequelize.INTEGER
       },
       numberOfInstallment: {
         type: Sequelize.INTEGER
@@ -42,10 +32,9 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    }, options);
+    });
   },
   async down(queryInterface, Sequelize) {
-    options.tableName = "Installments";
-    return queryInterface.dropTable(options);
+    await queryInterface.dropTable('Installments');
   }
 };
