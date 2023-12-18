@@ -31,6 +31,9 @@ module.exports = {
       customNumberOfInstallments: {
         type: Sequelize.INTEGER
       },
+      isCustom: {
+        type: Sequelize.BOOLEAN
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
