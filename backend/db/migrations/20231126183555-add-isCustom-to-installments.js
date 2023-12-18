@@ -9,8 +9,10 @@ module.exports = {
     await queryInterface.addColumn('Installments', 'isCustom', {
       type: Sequelize.BOOLEAN
       
-    }, options);
+    }, options); 
   },
+
+  // this is nothing
 
   async down(queryInterface, Sequelize) {
     await queryInterface.removeColumn('Installments', 'isCustom', options);
